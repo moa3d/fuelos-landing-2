@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#14232B">
+<title>FuelOS · من المضخة إلى مكتب المالك</title>
+<meta name="description" content="FuelOS نظام متكامل لمحطات الوقود: لوحة للمالك، تطبيق للعامل، تطبيق للسائق، وإدارة للمنصة. بيانات واحدة للجميع.">
+<meta property="og:title" content="FuelOS · نظام إدارة محطات الوقود">
+<meta property="og:description" content="لوحة المالك، تطبيق العامل، وتطبيق السائق على بيانات واحدة.">
+<meta property="og:locale" content="ar_SY">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F0; --surface:#fff; --ink:#14232B; --muted:#4A585F; --line:#C9D1CA;
+  --accent:#3DDC84; --panel:#14232B; --panel-ink:#B9C6CC; --screen:#0C161B;
+  --font:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+  --mono:"Share Tech Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#10181D;--surface:#172228;--ink:#EEF2EF;--muted:#A6B4BA;--line:#2B3A42;--panel:#0C161B;--screen:#060C0F}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.8}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;inset-inline-start:12px;top:-60px;background:var(--accent);color:#14232B;padding:8px 14px;border-radius:8px;z-index:20}
+.skip:focus{top:10px}
+
+/* nav */
+header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:22px;text-decoration:none}
+.logo i{width:14px;height:24px;background:var(--accent);border:2px solid var(--ink);border-radius:7px 7px 3px 3px}
+.links{display:flex;gap:22px}
+.links a{text-decoration:none;font-weight:500;font-size:16px}
+.links a:hover{text-decoration:underline}
+.acts{display:flex;gap:10px}
+.btn{display:inline-block;padding:10px 22px;border-radius:999px;font-weight:700;text-decoration:none;font-size:16px;border:2px solid var(--ink);line-height:1.5;background:transparent;color:var(--ink)}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.btn.main{background:var(--accent);color:#14232B;border-color:#14232B}
+.btn.main:hover{background:#62E79B;color:#14232B}
+.btn.sm{padding:6px 16px;font-size:15px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:60px 0 72px}
+h1{font-size:clamp(32px,5vw,50px);line-height:1.35;margin:0 0 16px}
+.lead{max-width:34em;color:var(--muted);margin:0 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.ticks{list-style:none;margin:0;padding:0;color:var(--muted);font-size:16px}
+.ticks li::before{content:"✓";color:var(--ink);font-weight:700;margin-inline-end:8px}
+.stage{position:relative;padding-bottom:8px}
+.phone{background:var(--panel);color:var(--accent);border-radius:22px;border:6px solid #2B3D47;padding:20px 22px;max-width:360px;margin-inline:auto}
+.ph-head{display:flex;justify-content:space-between;color:var(--panel-ink);font-size:15px}
+.ph-head b{color:var(--accent);font-weight:500}
+.num{direction:ltr;text-align:left;font-family:var(--mono);font-size:clamp(60px,11vw,88px);line-height:1.1;background:var(--screen);border-radius:10px;padding:8px 16px;margin:10px 0 4px;letter-spacing:2px}
+.unit{text-align:end;color:var(--panel-ink);font-size:15px;margin:0 0 12px}
+.track{list-style:none;margin:0;padding:0;color:var(--panel-ink);font-size:15px}
+.track li{display:flex;align-items:center;gap:10px;padding:3px 0}
+.track li::before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid var(--panel-ink)}
+.track .done{color:#fff}
+.track .done::before{background:var(--accent);border-color:var(--accent)}
+.chip{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:15px;line-height:1.5;box-shadow:0 6px 18px rgba(0,0,0,.12);position:absolute}
+.chip span{display:block;color:var(--muted);font-size:14px}
+.chip.a{top:-14px;inset-inline-start:-6px}
+.chip.b{bottom:-14px;inset-inline-end:-6px}
+
+/* sections */
+section{padding:64px 0;border-top:1px solid var(--line)}
+.kicker{color:var(--muted);font-weight:500;margin:0 0 4px;font-size:16px}
+h2{font-size:clamp(26px,3.6vw,36px);margin:0 0 10px;line-height:1.4}
+.sub{color:var(--muted);margin:0 0 32px;max-width:38em}
+h3{margin:0}
+
+/* journey */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.steps li{padding:24px 20px}
+.steps li+li{border-inline-start:1px solid var(--line)}
+.n{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#14232B;font-weight:700;margin-bottom:10px}
+.steps h3{font-size:19px}
+.steps p{margin:4px 0 10px;color:var(--muted);font-size:16px;line-height:1.7}
+.who{font-size:14px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:1px 12px}
+.band{margin-top:20px;padding:18px 22px;border-inline-start:6px solid var(--accent);background:var(--surface);border-radius:8px}
+
+/* apps */
+.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.app{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.app.owner{border:2px solid var(--ink)}
+.tag{font-size:14px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:0 12px;align-self:flex-start}
+.app h3{font-size:24px}
+.tagline{margin:-6px 0 0;color:var(--muted);font-size:16px}
+.app ul{margin:0;padding-inline-start:20px;font-size:16px}
+.mock{background:var(--bg);border-radius:10px;padding:8px 14px;font-size:15px}
+.mock div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.mock div+div{border-top:1px dashed var(--line)}
+.app .btn{align-self:flex-start;margin-top:auto}
+.note{color:var(--muted);font-size:15px;margin:16px 0 0}
+
+/* download */
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.meta{display:flex;gap:28px;margin:6px 0 14px;font-size:15px;color:var(--muted)}
+.meta b{display:block;color:var(--ink);font-weight:500}
+.install{margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.install div{padding:16px 0;border-top:2px solid var(--ink)}
+.install p{margin:2px 0 0;color:var(--muted);font-size:16px;line-height:1.7}
+.warn{margin-top:20px;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:16px}
+
+/* owners + status */
+.owners{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.pts div{padding:14px 0;border-bottom:1px solid var(--line)}
+.pts div:first-child{padding-top:0}
+.pts p{margin:0;color:var(--muted);font-size:16px}
+.pts h3{font-size:19px}
+.stat{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.stat li{border-top:4px solid var(--line);padding-top:14px}
+.stat li.ok{border-color:var(--ink)}
+.stat li.now{border-color:var(--accent)}
+.stat small{color:var(--muted);font-weight:500;font-size:15px}
+.stat p{margin:4px 0 0;color:var(--muted);font-size:16px;line-height:1.7}
+
+/* faq */
+details{border-bottom:1px solid var(--line);padding:14px 0}
+summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin:8px 0 0;color:var(--muted);max-width:44em}
+
+/* final */
+.final{text-align:center}
+.final .sub{margin-inline:auto}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:start}
+.roles a{display:block;text-decoration:none;background:var(--surface);border:2px solid var(--ink);border-radius:16px;padding:20px 22px}
+.roles a:hover{background:var(--accent);color:#14232B}
+.roles b{display:block;font-size:20px}
+.roles span{color:var(--muted);font-size:16px}
+.roles a:hover span{color:#14232B}
+
+footer{border-top:1px solid var(--line);padding:36px 0 44px;color:var(--muted);font-size:15px}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+footer h4{margin:0 0 6px;color:var(--ink);font-size:16px}
+footer ul{list-style:none;margin:0;padding:0}
+footer a{color:var(--muted)}
+.copy{margin-top:28px;padding-top:16px;border-top:1px solid var(--line)}
+
+@media (max-width:860px){
+  .links{display:none}
+  .hero,.owners,.dl,.apps{grid-template-columns:1fr}
+  .hero{gap:44px;padding:40px 0 56px}
+  .steps,.stat,.install,.roles,.fgrid{grid-template-columns:1fr}
+  .steps li+li{border-inline-start:0;border-top:1px solid var(--line)}
+  .chip{position:static;margin-top:10px}
+  .acts .btn:not(.main){display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top"><i aria-hidden="true"></i>FuelOS</a>
+    <nav class="links" aria-label="التنقل الرئيسي">
+      <a href="#journey">كيف يعمل</a>
+      <a href="#apps">التطبيقات</a>
+      <a href="#download">التحميل</a>
+      <a href="#owners">للمالكين</a>
+      <a href="#faq">أسئلة شائعة</a>
+    </nav>
+    <div class="acts">
+      <a class="btn sm" href="https://fuelos-owner.vercel.app">دخول المالك</a>
+      <a class="btn main sm" href="#download">حمّل التطبيق</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div id="top" class="wrap hero">
+  <div>
+    <h1>من المضخة إلى مكتب المالك، على بيانات واحدة</h1>
+    <p class="lead">FuelOS يربط العامل والمالك والسائق في نظام واحد. ما يُسجَّل على المضخة يظهر في المكتب، ويرى كل طرف ما يخصّه دون دفاتر منفصلة.</p>
+    <div class="cta">
+      <a class="btn main" href="#download">حمّل تطبيق العامل</a>
+      <a class="btn" href="https://fuelos-owner.vercel.app">لوحة المالك</a>
+    </div>
+    <ul class="ticks">
+      <li>تطبيق للعامل وتطبيق للسائق</li>
+      <li>لوحة ويب للمالك دون أجهزة إضافية</li>
+      <li>حسابات المحطة في مكان واحد</li>
+    </ul>
+  </div>
+  <div class="stage">
+    <div class="phone" role="img" aria-label="مثال توضيحي: عملية تعبئة 32.40 لتر على المضخة 2">
+      <div class="ph-head"><b>المضخة 2</b><span>بنزين · وردية الصباح</span></div>
+      <div class="num" id="liters">32.40</div>
+      <p class="unit">لتر</p>
+      <ol class="track">
+        <li class="done">تم تسجيل العملية</li>
+        <li class="done">ظهرت في مكتب المالك</li>
+        <li>تحديث حساب السائق</li>
+      </ol>
+    </div>
+    <div class="chip a"><b>عملية جديدة في المكتب</b><span>وصلت فور تسجيلها</span></div>
+    <div class="chip b"><b>سجّل العامل التعبئة</b><span>من تطبيق العامل</span></div>
+  </div>
+</div>
+
+<section id="journey">
+  <div class="wrap">
+    <p class="kicker">كيف يعمل</p>
+    <h2>أربع محطات، وكل تطبيق يعرف دوره</h2>
+    <p class="sub">كل تعبئة تمرّ بالمسار نفسه. عند كل محطة تنتقل المعلومة تلقائياً إلى الطرف المسؤول عنها.</p>
+    <ol class="steps">
+      <li><span class="n">1</span><h3>السائق يعبّئ</h3><p>يصل إلى المحطة ويعبّئ سيارته.</p><span class="who">تطبيق السائق</span></li>
+      <li><span class="n">2</span><h3>العامل يسجّل</h3><p>يسجّل العملية على المضخة أثناء الوردية.</p><span class="who">تطبيق العامل</span></li>
+      <li><span class="n">3</span><h3>المالك يتابع</h3><p>تظهر العملية في المكتب ضمن المبيعات والحسابات.</p><span class="who">لوحة المالك</span></li>
+      <li><span class="n">4</span><h3>السائق يراجع</h3><p>يتابع تعبئاته وما وفّره مع الوقت.</p><span class="who">تطبيق السائق</span></li>
+    </ol>
+    <p class="band"><b>وفريق FuelOS يتابع المنصة كاملة.</b> كل محطة وكل مستخدم في شاشة إدارة واحدة، مع القدرة على التدخّل عند أي مشكلة.</p>
+  </div>
+</section>
+
+<section id="apps">
+  <div class="wrap">
+    <p class="kicker">التطبيقات</p>
+    <h2>واجهة لكل طرف، وبيانات واحدة للجميع</h2>
+    <p class="sub">تطبيقان لمن هم في الميدان، ولوحتان على الويب للمكتب وللإدارة.</p>
+    <div class="apps">
+      <article class="app owner">
+        <span class="tag">موقع ويب</span>
+        <h3>لوحة المالك</h3>
+        <p class="tagline">المكتب يرى المحطة كلها</p>
+        <ul><li>متابعة المبيعات لحظة تسجيلها</li><li>حسابات المحطة في مكان واحد</li><li>متابعة العمال والورديات</li></ul>
+        <div class="mock"><div><span>مضخة 2 · بنزين</span><b>32.40 لتر</b></div><div><span>مضخة 1 · ديزل</span><b>58.00 لتر</b></div></div>
+        <a class="btn main" href="https://fuelos-owner.vercel.app">دخول لوحة المالك</a>
+      </article>
+      <article class="app">
+        <span class="tag">جوال</span>
+        <h3>تطبيق العامل</h3>
+        <p class="tagline">كل ما يحتاجه العامل على المضخة</p>
+        <ul><li>تسجيل عمليات التعبئة</li><li>العمل ضمن الوردية</li><li>يعمل من المتصفح أو كتطبيق أندرويد</li></ul>
+        <div class="mock"><div><span>مضخة 2 · بنزين</span><b>تسجيل العملية</b></div></div>
+        <a class="btn" href="https://fuelos-worker.vercel.app">دخول العامل</a>
+      </article>
+      <article class="app">
+        <span class="tag">جوال</span>
+        <h3>تطبيق السائق</h3>
+        <p class="tagline">حيث يتابع الزبون تعبئته</p>
+        <ul><li>سجل التعبئات</li><li>متابعة ما يوفّره السائق</li><li>استخدام يومي بسيط</li></ul>
+        <div class="mock"><div><span>آخر تعبئة</span><b>بنزين · 20 لتر</b></div></div>
+        <a class="btn" href="https://fuelos-customer.vercel.app">فتح تطبيق السائق</a>
+      </article>
+      <article class="app">
+        <span class="tag">موقع ويب · داخلي</span>
+        <h3>لوحة الإدارة</h3>
+        <p class="tagline">غرفة التحكم بالمنصة كلها</p>
+        <ul><li>إدارة المحطات والمستخدمين</li><li>متابعة النشاط على المنصة</li><li>معالجة المشكلات</li></ul>
+        <div class="mock"><div><span>محطات فعّالة</span><b>12</b></div><div><span>عمليات اليوم</span><b>340</b></div></div>
+        <a class="btn" href="https://fuelos-admin-psi.vercel.app">دخول الإدارة</a>
+      </article>
+    </div>
+    <p class="note">الأرقام في الأمثلة توضيحية فقط.</p>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <p class="kicker">التحميل</p>
+    <h2>حمّل التطبيق مباشرة على أندرويد</h2>
+    <p class="sub">إلى أن تصل التطبيقات إلى المتاجر، يمكنك تحميلها من هنا مباشرة. ملف واحد، وتثبيت خلال دقيقة.</p>
+    <div class="dl">
+      <article class="app">
+        <h3>تطبيق العامل</h3>
+        <p class="tagline">سجّل عمليات الوردية من هاتفك.</p>
+        <div class="meta"><span>المنصة<b>Android</b></span><span>الإصدار<b>—</b></span><span>الحجم<b>—</b></span></div>
+        <!-- ضع رابط ملف APK هنا بدل # -->
+        <a class="btn main" href="#">تحميل APK</a>
+        <span class="note">iOS · قريباً</span>
+      </article>
+      <article class="app">
+        <h3>تطبيق السائق</h3>
+        <p class="tagline">تابع تعبئاتك. نسخة أندرويد قريباً.</p>
+        <div class="meta"><span>المنصة<b>ويب الآن</b></span><span>أندرويد<b>قريباً</b></span></div>
+        <a class="btn" href="https://fuelos-customer.vercel.app">افتح النسخة الويب</a>
+      </article>
+    </div>
+    <h3 style="margin-top:36px">طريقة التثبيت</h3>
+    <div class="install">
+      <div><b>1. حمّل الملف</b><p>اضغط زر التحميل من هاتفك وانتظر حتى يكتمل.</p></div>
+      <div><b>2. اسمح بالتثبيت</b><p>إذا طلب الهاتف ذلك، فعّل «السماح من هذا المصدر» للمتصفح.</p></div>
+      <div><b>3. افتح الملف وثبّت</b><p>اضغط «تثبيت»، ثم افتح التطبيق وسجّل الدخول.</p></div>
+    </div>
+    <p class="warn">قد يظهر تنبيه من Google Play Protect لأن التطبيق ليس من المتجر بعد. هذا طبيعي، اختر «تثبيت على أي حال». حمّل التطبيق من هذه الصفحة فقط.</p>
+  </div>
+</section>
+
+<section id="owners">
+  <div class="wrap owners">
+    <div>
+      <p class="kicker">لأصحاب المحطات</p>
+      <h2>محطات وقود فقط.</h2>
+      <p class="sub">FuelOS مبني لمحطات الوقود في السوق السوري، وليس لكل نشاط. كل شاشة مصمّمة لتسجيل التعبئة ومتابعة حسابها.</p>
+      <div class="cta">
+        <a class="btn main" href="https://fuelos-owner.vercel.app">دخول لوحة المالك</a>
+        <a class="btn" href="#">انضم كمحطة شريكة</a>
+      </div>
+    </div>
+    <div class="pts">
+      <div><h3>العملية تظهر لحظة تسجيلها</h3><p>ما يسجّله العامل يصل إلى المكتب دون انتظار أو مكالمات.</p></div>
+      <div><h3>حسابات واضحة</h3><p>مبيعات المحطة في مكان واحد بدل دفاتر منفصلة.</p></div>
+      <div><h3>بدون أجهزة إضافية</h3><p>لوحة ويب تعمل من متصفح الحاسوب أو التابلت أو الجوال.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="status">
+  <div class="wrap">
+    <p class="kicker">حالة المشروع</p>
+    <h2>أين وصلنا</h2>
+    <p class="sub"></p>
+    <ol class="stat">
+      <li class="ok"><small>مكتمل</small><h3>بناء المنظومة</h3><p>التطبيقات ولوحات الويب، مع ربطها ببعضها.</p></li>
+      <li class="now"><small>المرحلة الحالية</small><h3>تجربة وإطلاق أولي</h3><p>تطبيق العامل متاح للتحميل المباشر على أندرويد.</p></li>
+      <li><small>التالي</small><h3>تطبيق السائق والمتاجر</h3><p>نسخة أندرويد للسائق، ثم النشر على المتاجر.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <p class="kicker">أسئلة شائعة</p>
+    <h2>قبل أن تبدأ</h2>
+    <p class="sub">لم تجد جوابك؟ <a href="#">راسلنا على واتساب</a>.</p>
+    <details><summary>لماذا التحميل من الموقع وليس من المتجر؟</summary><p>التطبيقات في مرحلة الإطلاق الأولي، ونعمل على نشرها في المتاجر. حتى ذلك الوقت، التحميل المباشر من هذه الصفحة هو الطريقة الرسمية.</p></details>
+    <details><summary>هل التحميل من خارج المتجر آمن؟</summary><p>نعم، طالما حمّلت الملف من هذه الصفحة. التحذير الذي قد يظهر سببه فقط أن التطبيق ليس من المتجر.</p></details>
+    <details><summary>هل يوجد تطبيق للآيفون؟</summary><p>يمكنك فتح التطبيقات من المتصفح على أي هاتف. نسخة iOS الأصلية لم تصدر بعد.</p></details>
+    <details><summary>كيف أضيف محطتي إلى FuelOS؟</summary><p>تواصل معنا عبر زر «انضم كمحطة شريكة». بعد تفعيل حسابك تدخل إلى لوحة المالك من المتصفح.</p></details>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>جاهزون لأول عملية تعبئة</h2>
+    <p class="sub">اختر دورك وابدأ الآن.</p>
+    <div class="roles">
+      <a href="https://fuelos-owner.vercel.app"><b>أنا مالك</b><span>ادخل إلى لوحة المالك وتابع محطتك.</span></a>
+      <a href="https://fuelos-worker.vercel.app"><b>أنا عامل</b><span>ادخل إلى تطبيق العامل وسجّل عملياتك.</span></a>
+      <a href="https://fuelos-customer.vercel.app"><b>أنا سائق</b><span>افتح تطبيق السائق وتابع تعبئاتك.</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div><a class="logo" href="#top"><i aria-hidden="true"></i>FuelOS</a><p>نظام إدارة محطات الوقود: لوحة للمالك، تطبيق للعامل، وتطبيق للسائق.</p></div>
+      <div><h4>التطبيقات</h4><ul><li><a href="#download">تطبيق العامل · أندرويد</a></li><li><a href="https://fuelos-customer.vercel.app">تطبيق السائق</a></li><li><a href="#faq">طريقة التثبيت والأسئلة</a></li></ul></div>
+      <div><h4>للمالكين</h4><ul><li><a href="https://fuelos-owner.vercel.app">دخول لوحة المالك</a></li><li><a href="#">انضم كمحطة شريكة</a></li><li><a href="#">واتساب</a></li></ul></div>
+    </div>
+    <p class="copy">© 2026 FuelOS. جميع الحقوق محفوظة. <a href="https://fuelos-admin-psi.vercel.app">دخول الإدارة</a></p>
+  </div>
+</footer>
+
+<script>
+// one-time count-up on the hero pump display
+(function(){
+  var el=document.getElementById('liters');
+  if(!el||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var target=32.40,dur=1400,t0=null;
+  function step(t){
+    if(t0===null)t0=t;
+    var p=Math.min((t-t0)/dur,1);
+    el.textContent=(target*(1-Math.pow(1-p,3))).toFixed(2);
+    if(p<1)requestAnimationFrame(step);
+  }
+  el.textContent='0.00';
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
